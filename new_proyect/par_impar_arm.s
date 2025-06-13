@@ -1,9 +1,9 @@
-// par_impar.s
+// alternar.s
 
-.global par_impar
+.global alternar
 
 .text
-par_impar:
+alternar:
     PUSH {R4, LR}                  // Guardar registros
 
     LDR R0, =prompt_str
@@ -14,7 +14,7 @@ par_impar:
 loop:
     MOV R0, R4
     BL prenderLEDs
-    BL delay_con_teclado
+    BL espera_tecla
     CMP R0, #0
     BEQ exit
 
