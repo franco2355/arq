@@ -1,10 +1,10 @@
-// giro_auto.s
+// guinio.s
 // Simula el patrón de luces secuenciales tipo intermitente moderno
 
-.global giro_auto
+.global guinio
 
 .text
-giro_auto:
+guinio:
     PUSH {R4, R5, R6, LR}              // Guardar registros
 
     LDR R0, =prompt_str
@@ -18,7 +18,7 @@ giro_loop:
     MOV R0, R5
     BL prenderLEDs                     // Encender LEDs según patrón acumulado
 
-    BL delay_con_teclado              // Esperar con detección de teclado
+    BL espera_tecla                   // Esperar con detección de teclado
     CMP R0, #0
     BEQ giro_exit
 
@@ -29,14 +29,14 @@ giro_loop:
     // Mostrar patrón completo
     MOV R0, R5
     BL prenderLEDs
-    BL delay_con_teclado
+    BL espera_tecla
     CMP R0, #0
     BEQ giro_exit
 
     // Apagar LEDs
     MOV R0, #0x00
     BL prenderLEDs
-    BL delay_con_teclado
+    BL espera_tecla
     CMP R0, #0
     BEQ giro_exit
 

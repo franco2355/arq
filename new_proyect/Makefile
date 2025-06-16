@@ -6,7 +6,7 @@ CFLAGS = -Wall -g
 LDFLAGS = 
 
 # Archivos objeto
-OBJECTS = main.o menu.o, 
+OBJECTS = main.o giro_auto_arm.o par_impar_arm.o
 
 # Objetivo principal
 all: menu_arm
@@ -29,4 +29,5 @@ clean:
 
 # Correr el programa
 run: menu_arm
-	./menu_arm 
+	./menu_arm
+
