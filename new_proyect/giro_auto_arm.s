@@ -1,52 +1,52 @@
-// giro_auto.s
-// Simula el patrón de luces secuenciales tipo intermitente moderno
+// guinio.s
+// Muestra un giro secuencial al estilo de los autos actuales
 
-.global giro_auto
+.global guinio
 
 .text
-giro_auto:
-    PUSH {R4, R5, R6, LR}              // Guardar registros
+guinio:
+    PUSH {R4, R5, R6, LR}              // Guardar estado
 
     LDR R0, =prompt_str
-    BL printf                          // Mostrar mensaje
+    BL printf                          // Imprimir texto
 
-    MOV R4, #0x80                      // Posición inicial (bit más a la izquierda)
-    MOV R5, #0                         // Acumulador = 0
+    MOV R4, #0x80                      // Comienza en el bit más alto
+    MOV R5, #0                         // Inicializa acumulador
 
 giro_loop:
-    ORR R5, R5, R4                     // Acumulador |= posición
+    ORR R5, R5, R4                     // Acumula la posición
     MOV R0, R5
-    BL prenderLEDs                     // Encender LEDs según patrón acumulado
+    BL prenderLEDs                     // Enciende LEDs con el valor acumulado
 
-    BL delay_con_teclado              // Esperar con detección de teclado
+    BL espera_tecla                   // Pausa y revisa el teclado
     CMP R0, #0
     BEQ giro_exit
 
-    LSR R4, R4, #1                     // Desplazar posición a la derecha
+    LSR R4, R4, #1                     // Mueve la posición a la derecha
     CMP R4, #0
-    BNE giro_loop                      // Repetir si aún hay bits a encender
+    BNE giro_loop                      // Continúa mientras queden bits
 
-    // Mostrar patrón completo
+    // Al final se encienden todos
     MOV R0, R5
     BL prenderLEDs
-    BL delay_con_teclado
+    BL espera_tecla
     CMP R0, #0
     BEQ giro_exit
 
-    // Apagar LEDs
+    // Luego se apagan
     MOV R0, #0x00
     BL prenderLEDs
-    BL delay_con_teclado
+    BL espera_tecla
     CMP R0, #0
     BEQ giro_exit
 
-    // Reiniciar variables
+    // Vuelve al inicio
     MOV R4, #0x80
     MOV R5, #0
     B giro_loop
 
 giro_exit:
-    POP {R4, R5, R6, PC}               // Restaurar registros y regresar
+    POP {R4, R5, R6, PC}               // Restaurar y salir
 
 .data
 prompt_str: .asciz "Mostrando Giño de Auto Secuencial:\n"

@@ -6,27 +6,28 @@ CFLAGS = -Wall -g
 LDFLAGS = 
 
 # Archivos objeto
-OBJECTS = main.o menu.o, 
+OBJECTS = main.o giro_auto_arm.o par_impar_arm.o
 
-# Objetivo principal
+# Generar el ejecutable
 all: menu_arm
 
-# Compilación del programa
+# Enlace final del programa
 menu_arm: $(OBJECTS)
 	$(LD) $(LDFLAGS) $(OBJECTS) -o menu_arm
 
-# Regla para compilar archivos .c a .o
+# Compilar archivos C
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Regla para compilar archivos .s a .o
+# Compilar archivos en ensamblador
 %.o: %.s
 	$(CC) -c $< -o $@
 
-# Limpieza
+# Eliminar archivos generados
 clean:
 	rm -f *.o menu_arm
 
-# Correr el programa
+# Ejecutar la aplicación
 run: menu_arm
-	./menu_arm 
+	./menu_arm
+
