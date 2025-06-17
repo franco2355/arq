@@ -1,28 +1,28 @@
 // alternar.s
 
-.global alternar
+.global alternar              @ Símbolo exportado
 
 .text
 alternar:
-    PUSH {R4, LR}                  // Salva registros
+    PUSH {R4, LR}                  @ Guardar R4 y LR
 
-    LDR R0, =prompt_str
-    BL printf                      // Imprime texto
+    LDR R0, =prompt_str            @ Dirección del mensaje
+    BL printf                      @ Mostrar texto
 
-    MOV R4, #0x55                  // Patrón de arranque
+    MOV R4, #0x55                  @ Patrón de arranque
 
 loop:
-    MOV R0, R4
-    BL prenderLEDs
-    BL espera_tecla
-    CMP R0, #0
-    BEQ exit
+    MOV R0, R4                     @ Valor a mostrar
+    BL prenderLEDs                 @ Encender LEDs
+    BL espera_tecla                @ Esperar posible salida
+    CMP R0, #0                     @ ¿Se presionó 'a'?
+    BEQ exit                       @ Terminar si es así
 
-    EOR R4, R4, #0xFF              // Invierte los bits
-    B loop
+    EOR R4, R4, #0xFF              @ Invertir el patrón
+    B loop                         @ Repetir
 
 exit:
-    POP {R4, PC}                   // Restaurar y terminar
+    POP {R4, PC}                   @ Restaurar R4 y regresar
 
 .data
 prompt_str: .asciz "Mostrando secuencia Par e Impar...\n"

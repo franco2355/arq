@@ -1,33 +1,32 @@
-CC = gcc
-AS = as
-LD = gcc
+CC = gcc            # Compilador de C
+AS = as             # Ensamblador
+LD = gcc            # Enlazador
 
-CFLAGS = -Wall -g
-LDFLAGS = 
+CFLAGS = -Wall -g   # Advertencias y depuración
+LDFLAGS =           # Flags de enlace
 
-# Archivos objeto
+# Lista de objetos que forman la aplicación
 OBJECTS = main.o giro_auto_arm.o par_impar_arm.o
 
-# Generar el ejecutable
+# Regla por defecto: construir el binario
 all: menu_arm
 
-# Enlace final del programa
+# Unir todos los objetos para obtener el ejecutable
 menu_arm: $(OBJECTS)
 	$(LD) $(LDFLAGS) $(OBJECTS) -o menu_arm
 
-# Compilar archivos C
+# Cómo compilar los archivos C individuales
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Compilar archivos en ensamblador
+# Cómo compilar los archivos en ensamblador
 %.o: %.s
 	$(CC) -c $< -o $@
 
-# Eliminar archivos generados
+# Borrar los productos de la compilación
 clean:
 	rm -f *.o menu_arm
 
-# Ejecutar la aplicación
+# Ejecutar el programa resultante
 run: menu_arm
 	./menu_arm
-
