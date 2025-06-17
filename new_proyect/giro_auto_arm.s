@@ -1,52 +1,52 @@
-// giro_auto.s
-// Simula el patrón de luces secuenciales tipo intermitente moderno
 
-.global giro_auto
+
+
+.global guinio
 
 .text
-giro_auto:
-    PUSH {R4, R5, R6, LR}              // Guardar registros
+guinio:
+    PUSH {R4, R5, R6, LR}
 
     LDR R0, =prompt_str
-    BL printf                          // Mostrar mensaje
+    BL printf
 
-    MOV R4, #0x80                      // Posición inicial (bit más a la izquierda)
-    MOV R5, #0                         // Acumulador = 0
+    MOV R4, #0x80
+    MOV R5, #0
 
 giro_loop:
-    ORR R5, R5, R4                     // Acumulador |= posición
-    MOV R0, R5
-    BL prenderLEDs                     // Encender LEDs según patrón acumulado
-
-    BL delay_con_teclado              // Esperar con detección de teclado
-    CMP R0, #0
-    BEQ giro_exit
-
-    LSR R4, R4, #1                     // Desplazar posición a la derecha
-    CMP R4, #0
-    BNE giro_loop                      // Repetir si aún hay bits a encender
-
-    // Mostrar patrón completo
+    ORR R5, R5, R4
     MOV R0, R5
     BL prenderLEDs
-    BL delay_con_teclado
+
+    BL espera_tecla
     CMP R0, #0
     BEQ giro_exit
 
-    // Apagar LEDs
+    LSR R4, R4, #1
+    CMP R4, #0
+    BNE giro_loop
+
+
+    MOV R0, R5
+    BL prenderLEDs
+    BL espera_tecla
+    CMP R0, #0
+    BEQ giro_exit
+
+
     MOV R0, #0x00
     BL prenderLEDs
-    BL delay_con_teclado
+    BL espera_tecla
     CMP R0, #0
     BEQ giro_exit
 
-    // Reiniciar variables
+
     MOV R4, #0x80
     MOV R5, #0
     B giro_loop
 
 giro_exit:
-    POP {R4, R5, R6, PC}               // Restaurar registros y regresar
+    POP {R4, R5, R6, PC}
 
 .data
 prompt_str: .asciz "Mostrando Giño de Auto Secuencial:\n"

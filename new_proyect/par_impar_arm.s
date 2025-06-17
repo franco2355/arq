@@ -1,28 +1,28 @@
-// par_impar.s
 
-.global par_impar
+
+.global alternar
 
 .text
-par_impar:
-    PUSH {R4, LR}                  // Guardar registros
+alternar:
+    PUSH {R4, LR}
 
     LDR R0, =prompt_str
-    BL printf                      // Mostrar mensaje
+    BL printf
 
-    MOV R4, #0x55                  // Patrón inicial
+    MOV R4, #0x55
 
 loop:
     MOV R0, R4
     BL prenderLEDs
-    BL delay_con_teclado
+    BL espera_tecla
     CMP R0, #0
     BEQ exit
 
-    EOR R4, R4, #0xFF              // Alternar patrón
+    EOR R4, R4, #0xFF
     B loop
 
 exit:
-    POP {R4, PC}                   // Restaurar y regresar
+    POP {R4, PC}
 
 .data
 prompt_str: .asciz "Mostrando secuencia Par e Impar...\n"
