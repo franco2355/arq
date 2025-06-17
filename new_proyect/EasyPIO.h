@@ -1,30 +1,20 @@
-/*	EasyPIO.h
- *		Created: 		8 October 2013
- *						Sarah_Lichtman@hmc.edu & Joshua_Vasquez@hmc.edu
- *		Last Modified: 	5 April 2014
- *						Sarah_Lichtman@hmc.edu & Joshua_Vasquez@hmc.edu
- *                      15 August 2014
- *                      David_Harris@hmc.edu  (simplify pinMode)
- *						
- *	Library to simplify memory access on Raspberry Pi (Broadcom BCM2835). 
- *	Must be run with root permissions using sudo.
-*/
+
 
 #ifndef EASY_PIO_H
 #define EASY_PIO_H
 
-// Include statements
+
 #include <sys/mman.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
 #include <unistd.h>
 
-/////////////////////////////////////////////////////////////////////
-// Constants
-/////////////////////////////////////////////////////////////////////
 
-// GPIO FSEL Types
+
+
+
+
 #define INPUT  0
 #define OUTPUT 1
 #define ALT0   4
@@ -34,25 +24,25 @@
 #define ALT4   3
 #define ALT5   2
 
-// Clock Manager Bitfield offsets:
+
 #define PWM_CLK_PASSWORD 0x5a000000
 #define PWM_MASH 9
 #define PWM_KILL 5
 #define PWM_ENAB 4
 #define PWM_SRC 0
 
-// PWM Constants
-#define PLL_FREQUENCY 500000000 // default PLLD value is 500 [MHz]
-#define CM_FREQUENCY 25000000   // max pwm clk is 25 [MHz]
+
+#define PLL_FREQUENCY 500000000
+#define CM_FREQUENCY 25000000
 #define PLL_CLOCK_DIVISOR (PLL_FREQUENCY / CM_FREQUENCY)
 
-/////////////////////////////////////////////////////////////////////
-// Memory Map
-/////////////////////////////////////////////////////////////////////
 
-// These #define values are specific to the BCM2835, taken from "BCM2835 ARM Peripherals"
-//#define BCM2835_PERI_BASE        0x20000000
-// Updated to BCM2836 for Raspberry Pi 2.0 Fall 2015 dmh
+
+
+
+
+
+
 #define BCM2835_PERI_BASE        0x3F000000
 
 #define GPIO_BASE               (BCM2835_PERI_BASE + 0x200000)
@@ -67,22 +57,22 @@
 
 #define BLOCK_SIZE (4*1024)
 
-// Pointers that will be memory mapped when pioInit() is called
-volatile unsigned int *gpio; //pointer to base of gpio
-volatile unsigned int *spi;  //pointer to base of spi registers
+
+volatile unsigned int *gpio;
+volatile unsigned int *spi;
 volatile unsigned int *pwm;
 
 volatile unsigned int *sys_timer;
-volatile unsigned int *arm_timer; // pointer to base of arm timer registers
+volatile unsigned int *arm_timer;
 
 volatile unsigned int *uart;
 volatile unsigned int *cm_pwm;
 
-/////////////////////////////////////////////////////////////////////
-// GPIO Registers
-/////////////////////////////////////////////////////////////////////
 
-// Function Select
+
+
+
+
 #define GPFSEL    ((volatile unsigned int *) (gpio + 0))
 typedef struct
 {
@@ -181,7 +171,7 @@ typedef struct
 #define GPFSEL5bits (* (volatile gpfsel5bits*) (gpio + 5))   
 #define GPFSEL5 (* (volatile unsigned int *) (gpio + 5))                        
 
-// Pin Output Select
+
 #define GPSET    ((volatile unsigned int *) (gpio + 7))
 typedef struct
 {
@@ -250,7 +240,7 @@ typedef struct
 #define GPSET1bits (* (volatile gpset1bits*) (gpio + 8))   
 #define GPSET1 (* (volatile unsigned int *) (gpio + 8)) 
 
-// Pin Output Clear
+
 #define GPCLR    ((volatile unsigned int *) (gpio + 10))
 typedef struct
 {
@@ -319,7 +309,7 @@ typedef struct
 #define GPCLR1bits (* (volatile gpclr1bits*) (gpio + 11))   
 #define GPCLR1 (* (volatile unsigned int *) (gpio + 11)) 
 
-// Pin Level
+
 #define GPLEV    ((volatile unsigned int *) (gpio + 13))
 typedef struct
 {
@@ -389,9 +379,9 @@ typedef struct
 #define GPLEV1bits (* (volatile gplev1bits*) (gpio + 14))   
 #define GPLEV1 (* (volatile unsigned int *) (gpio + 14)) 
 
-/////////////////////////////////////////////////////////////////////
-// SPI Registers
-/////////////////////////////////////////////////////////////////////
+
+
+
 
 typedef struct
 {
@@ -428,9 +418,9 @@ typedef struct
 #define SPI0CLK (* (volatile unsigned int *) (spi + 2))
 #define SPI0DLEN (* (volatile unsigned int *) (spi + 3))
 
-/////////////////////////////////////////////////////////////////////
-// System Timer Registers
-/////////////////////////////////////////////////////////////////////
+
+
+
 
 typedef struct
 {
@@ -450,9 +440,9 @@ typedef struct
 #define SYS_TIMER_C2	(* (volatile unsigned int*)(sys_timer + 5))
 #define SYS_TIMER_C3	(* (volatile unsigned int*)(sys_timer + 6))
 
-/////////////////////////////////////////////////////////////////////
-// ARM Interrupt Registers
-/////////////////////////////////////////////////////////////////////
+
+
+
 
 #define IRQ_PENDING_BASIC (* (volatile unsigned int *) (arm_timer + 128))
 #define IRQ_PENDING1 (* (volatile unsigned int *) (arm_timer + 129))
@@ -465,21 +455,21 @@ typedef struct
 #define IRQ_DISABLE2 (* (volatile unsigned int *) (arm_timer + 136))
 #define IRQ_DISABLE_BASIC (* (volatile unsigned int *) (arm_timer + 137))
 
-/////////////////////////////////////////////////////////////////////
-// ARM Timer Registers
-/////////////////////////////////////////////////////////////////////
+
+
+
 
 #define ARM_TIMER_LOAD (* (volatile unsigned int *) (arm_timer + 256))
-//TODO: make timer control struct
+
 #define ARM_TIMER_CONTROL  (* (volatile unsigned int *) (arm_timer + 258))
 #define ARM_TIMER_IRQCLR (* (volatile unsigned int*) (arm_timer + 259))
 #define ARM_TIMER_RAWIRQ (* (volatile unsigned int *) (arm_timer + 260))
 #define ARM_TIMER_RELOAD (* (volatile unsigned int *) (arm_timer + 262))
 #define ARM_TIMER_DIV (* (volatile unsigned int *) (arm_timer + 263))
 
-/////////////////////////////////////////////////////////////////////
-// UART Registers
-/////////////////////////////////////////////////////////////////////
+
+
+
 
 typedef struct
 {
@@ -578,9 +568,9 @@ typedef struct
 #define UART_RISbits (* (volatile uart_risbits*) (uart + 15))
 #define UART_RIS (*(volatile unsigned int *) (uart + 15))
 
-/////////////////////////////////////////////////////////////////////
-// PWM Registers
-/////////////////////////////////////////////////////////////////////
+
+
+
 
 typedef struct
 {
@@ -608,9 +598,9 @@ typedef struct
 #define PWM_RNG1 (*(volatile unsigned int *) (pwm + 4))
 #define PWM_DAT1 (*(volatile unsigned int *)(pwm + 5))
 
-/////////////////////////////////////////////////////////////////////
-// Clock Manager Registers
-/////////////////////////////////////////////////////////////////////
+
+
+
 
 typedef struct
 {
@@ -636,28 +626,28 @@ typedef struct
 #define CM_PWMDIVbits (* (volatile cm_pwmdivbits *) (cm_pwm + 41))
 #define CM_PWMDIV (*(volatile unsigned int *)(cm_pwm + 41)) 
 
-/////////////////////////////////////////////////////////////////////
-// General Functions
-/////////////////////////////////////////////////////////////////////
 
-// TODO: return error code instead of printing (mem_fd, reg_map)
+
+
+
+
 void pioInit() {
 	int  mem_fd;
 	void *reg_map;
 
-	// /dev/mem is a psuedo-driver for accessing memory in the Linux filesystem
+
 	if ((mem_fd = open("/dev/mem", O_RDWR|O_SYNC) ) < 0) {
 	      printf("can't open /dev/mem \n");
 	      exit(-1);
 	}
 
 	reg_map = mmap(
-	  NULL,             //Address at which to start local mapping (null means don't-care)
-      BLOCK_SIZE,       //Size of mapped memory block
-      PROT_READ|PROT_WRITE,// Enable both reading and writing to the mapped memory
-      MAP_SHARED,       // This program does not have exclusive access to this memory
-      mem_fd,           // Map to /dev/mem
-      GPIO_BASE);       // Offset to GPIO peripheral
+	  NULL,
+      BLOCK_SIZE,
+      PROT_READ|PROT_WRITE,
+      MAP_SHARED,
+      mem_fd,
+      GPIO_BASE);
 
 	if (reg_map == MAP_FAILED) {
       printf("gpio mmap error %d\n", (int)reg_map);
@@ -668,12 +658,12 @@ void pioInit() {
 	gpio = (volatile unsigned *)reg_map;
 
     reg_map = mmap(
-	  NULL,             //Address at which to start local mapping (null means don't-care)
-      BLOCK_SIZE,       //Size of mapped memory block
-      PROT_READ|PROT_WRITE,// Enable both reading and writing to the mapped memory
-      MAP_SHARED,       // This program does not have exclusive access to this memory
-      mem_fd,           // Map to /dev/mem
-      SPI0_BASE);       // Offset to SPI peripheral
+	  NULL,
+      BLOCK_SIZE,
+      PROT_READ|PROT_WRITE,
+      MAP_SHARED,
+      mem_fd,
+      SPI0_BASE);
 
     if (reg_map == MAP_FAILED) {
       printf("spi mmap error %d\n", (int)reg_map);
@@ -684,12 +674,12 @@ void pioInit() {
     spi = (volatile unsigned *)reg_map;
 
     reg_map = mmap(
-	  NULL,             //Address at which to start local mapping (null means don't-care)
-      BLOCK_SIZE,       //Size of mapped memory block
-      PROT_READ|PROT_WRITE,// Enable both reading and writing to the mapped memory
-      MAP_SHARED,       // This program does not have exclusive access to this memory
-      mem_fd,           // Map to /dev/mem
-      PWM_BASE);       // Offset to PWM peripheral
+	  NULL,
+      BLOCK_SIZE,
+      PROT_READ|PROT_WRITE,
+      MAP_SHARED,
+      mem_fd,
+      PWM_BASE);
 
     if (reg_map == MAP_FAILED) {
       printf("pwm mmap error %d\n", (int)reg_map);
@@ -700,12 +690,12 @@ void pioInit() {
     pwm = (volatile unsigned *)reg_map;
 
     reg_map = mmap(
-	  NULL,             //Address at which to start local mapping (null means don't-care)
-      BLOCK_SIZE,       //Size of mapped memory block
-      PROT_READ|PROT_WRITE,// Enable both reading and writing to the mapped memory
-      MAP_SHARED,       // This program does not have exclusive access to this memory
-      mem_fd,           // Map to /dev/mem
-      SYS_TIMER_BASE);       // Offset to Timer peripheral
+	  NULL,
+      BLOCK_SIZE,
+      PROT_READ|PROT_WRITE,
+      MAP_SHARED,
+      mem_fd,
+      SYS_TIMER_BASE);
 
     if (reg_map == MAP_FAILED) {
       printf("sys timer mmap error %d\n", (int)reg_map);
@@ -716,12 +706,12 @@ void pioInit() {
     sys_timer = (volatile unsigned *)reg_map;
 
     reg_map = mmap(
-	  NULL,             //Address at which to start local mapping (null means don't-care)
-      BLOCK_SIZE,       //Size of mapped memory block
-      PROT_READ|PROT_WRITE,// Enable both reading and writing to the mapped memory
-      MAP_SHARED,       // This program does not have exclusive access to this memory
-      mem_fd,           // Map to /dev/mem
-      ARM_TIMER_BASE);       // Offset to interrupts
+	  NULL,
+      BLOCK_SIZE,
+      PROT_READ|PROT_WRITE,
+      MAP_SHARED,
+      mem_fd,
+      ARM_TIMER_BASE);
 
 
     if (reg_map == MAP_FAILED) {
@@ -733,12 +723,12 @@ void pioInit() {
     arm_timer = (volatile unsigned *)reg_map;
 
     reg_map = mmap(
-	  NULL,             //Address at which to start local mapping (null means don't-care)
-      BLOCK_SIZE,       //Size of mapped memory block
-      PROT_READ|PROT_WRITE,// Enable both reading and writing to the mapped memory
-      MAP_SHARED,       // This program does not have exclusive access to this memory
-      mem_fd,           // Map to /dev/mem
-      UART_BASE);       // Offset to UART peripheral
+	  NULL,
+      BLOCK_SIZE,
+      PROT_READ|PROT_WRITE,
+      MAP_SHARED,
+      mem_fd,
+      UART_BASE);
 
     if (reg_map == MAP_FAILED) {
       printf("uart mmap error %d\n", (int)reg_map);
@@ -749,12 +739,12 @@ void pioInit() {
     uart = (volatile unsigned *)reg_map;
 
     reg_map = mmap(
-	  NULL,             //Address at which to start local mapping (null means don't-care)
-      BLOCK_SIZE,       //Size of mapped memory block
-      PROT_READ|PROT_WRITE,// Enable both reading and writing to the mapped memory
-      MAP_SHARED,       // This program does not have exclusive access to this memory
-      mem_fd,           // Map to /dev/mem
-      CM_PWM_BASE);       // Offset to ARM timer peripheral
+	  NULL,
+      BLOCK_SIZE,
+      PROT_READ|PROT_WRITE,
+      MAP_SHARED,
+      mem_fd,
+      CM_PWM_BASE);
 
     if (reg_map == MAP_FAILED) {
       printf("cm_pwm mmap error %d\n", (int)reg_map);
@@ -766,36 +756,36 @@ void pioInit() {
 	close(mem_fd);
 }
 
-/////////////////////////////////////////////////////////////////////
-// Interrupt Functions
-/////////////////////////////////////////////////////////////////////
+
+
+
 
 int irq1, irq2, irqbasic;
 
 void noInterrupts(void) {
-    //save current interrupts
+
     irq1 = IRQ_ENABLE1;
     irq2 = IRQ_ENABLE2;
     irqbasic = IRQ_ENABLE_BASIC;
 
-    //disable interrupts
+
     IRQ_DISABLE1 = irq1;
     IRQ_DISABLE2 = irq2;
     IRQ_DISABLE_BASIC = irqbasic; 
 }
 
 void interrupts(void) {
-    if(IRQ_ENABLE1 == 0){ // if interrupts are disabled
-    //restore interrupts
+    if(IRQ_ENABLE1 == 0){
+
         IRQ_ENABLE1 = irq1;
         IRQ_ENABLE2 = irq2;
         IRQ_ENABLE_BASIC = irqbasic;
     }
 }
 
-/////////////////////////////////////////////////////////////////////
-// GPIO Functions
-/////////////////////////////////////////////////////////////////////
+
+
+
 
 void pinMode(int pin, int function) {
     int reg      =  pin/10;
@@ -843,74 +833,74 @@ int digitalReads(int pins[], int numPins) {
     return val;
 }
 
-/////////////////////////////////////////////////////////////////////
-// Timer Functions
-/////////////////////////////////////////////////////////////////////
 
-// RPi timer peripheral clock is 1MHz.
-// M0 and M3 are used by the GPU, so we must use M1 or M2
+
+
+
+
+
 
 void delayMicros(int micros) {
-    SYS_TIMER_C1 = SYS_TIMER_CLO + micros;   // set the compare register
-    // 1000 clocks per millisecond
-    SYS_TIMER_CSbits.M1 = 1;                 // reset match flag to 0
-    while(SYS_TIMER_CSbits.M1 == 0);         // wait until the match flag is set
+    SYS_TIMER_C1 = SYS_TIMER_CLO + micros;
+
+    SYS_TIMER_CSbits.M1 = 1;
+    while(SYS_TIMER_CSbits.M1 == 0);
 }
 
 void delayMillis(int millis) {
-    delayMicros(millis*1000);                // 1000 microseconds per millisecond
+    delayMicros(millis*1000);
 }
 
-/////////////////////////////////////////////////////////////////////
-// SPI Functions
-/////////////////////////////////////////////////////////////////////
+
+
+
 
 void spiInit(int freq, int settings) {
-    //set GPIO 8 (CE), 9 (MISO), 10 (MOSI), 11 (SCLK) alt fxn 0 (SPI0)
+
     pinMode(8, ALT0);
     pinMode(9, ALT0);
     pinMode(10, ALT0);
     pinMode(11, ALT0);
 
-    //Note: clock divisor will be rounded to the nearest power of 2
-    SPI0CLK = 250000000/freq;   // set SPI clock to 250MHz / freq
+
+    SPI0CLK = 250000000/freq;
     SPI0CS = settings;          
-    SPI0CSbits.TA = 1;          // turn SPI on with the "transfer active" bit
+    SPI0CSbits.TA = 1;
 }
 
 char spiSendReceive(char send){
-    SPI0FIFO = send;            // send data to slave
-    while(!SPI0CSbits.DONE);    // wait until SPI transmission complete
-    return SPI0FIFO;            // return received data
+    SPI0FIFO = send;
+    while(!SPI0CSbits.DONE);
+    return SPI0FIFO;
 }
 
 short spiSendReceive16(short send) {
     short rec;
-    SPI0CSbits.TA = 1;          // turn SPI on with the "transfer active" bit
-    rec = spiSendReceive((send & 0xFF00) >> 8); // send data MSB first
+    SPI0CSbits.TA = 1;
+    rec = spiSendReceive((send & 0xFF00) >> 8);
     rec = (rec << 8) | spiSendReceive(send & 0xFF);
-    SPI0CSbits.TA = 0;          // turn off SPI
+    SPI0CSbits.TA = 0;
     return rec;
 }
 
-/////////////////////////////////////////////////////////////////////
-// UART Functions
-/////////////////////////////////////////////////////////////////////
+
+
+
 
 void uartInit(int baud) {
-    uint fb = 12000000/baud; // 3 MHz UART clock
+    uint fb = 12000000/baud;
     
     pinMode(14, ALT0);
     pinMode(15, ALT0);
-    UART_IBRD = fb >> 6;       // 6 Fract, 16 Int bits of BRD
+    UART_IBRD = fb >> 6;
     UART_FBRD = fb & 63;
-    UART_LCRHbits.WLEN = 3;     // 8 Data, 1 Stop, 0 Parity, no FIFO, no Flow
-    UART_CRbits.UARTEN = 1;     // Enable uart.
+    UART_LCRHbits.WLEN = 3;
+    UART_CRbits.UARTEN = 1;
 }
 
 char getCharSerial(void) {
-    while (UART_FRbits.RXFE);    // Wait until data is available.
-    return UART_DRbits.DATA;          // Return char from serial port.
+    while (UART_FRbits.RXFE);
+    return UART_DRbits.DATA;
 }
 
 
@@ -919,29 +909,29 @@ void putCharSerial(char c) {
     UART_DRbits.DATA = c;
 }
 
-/////////////////////////////////////////////////////////////////////
-// Pulse Width Modulation Functions
-/////////////////////////////////////////////////////////////////////
+
+
+
 
 void pwmInit() {
     pinMode(18, ALT5);
 
-    // Configure the clock manager to generate a 25 MHz PWM clock.
-    // Documentation on the clock manager is missing in the datasheet
-    // but found in "BCM2835 Audio and PWM Clocks" by G.J. van Loo 6 Feb 2013.
-    // Maximum operating frequency of PWM clock is 25 MHz.
-    // Writes to the clock manager registers require simultaneous writing
-    // a "password" of 5A to the top bits to reduce the risk of accidental writes.
 
-    CM_PWMCTL = 0; // Turn off PWM before changing
-    CM_PWMCTL =  PWM_CLK_PASSWORD|0x20; // Turn off clock generator
-    while(CM_PWMCTLbits.BUSY); // Wait for generator to stop
-    CM_PWMCTL = PWM_CLK_PASSWORD|0x206; // Src = unfiltered 500 MHz CLKD
-    CM_PWMDIV = PWM_CLK_PASSWORD|(PLL_CLOCK_DIVISOR << 12); // PWM Freq = 25 MHz
-    CM_PWMCTL = CM_PWMCTL|PWM_CLK_PASSWORD|0x10;    // Enable PWM clock
-    while (!CM_PWMCTLbits.BUSY);    // Wait for generator to start    
-    PWM_CTLbits.MSEN1 = 1;  // Channel 1 in mark/space mode
-    PWM_CTLbits.PWEN1 = 1;  // Enable pwm
+
+
+
+
+
+
+    CM_PWMCTL = 0;
+    CM_PWMCTL =  PWM_CLK_PASSWORD|0x20;
+    while(CM_PWMCTLbits.BUSY);
+    CM_PWMCTL = PWM_CLK_PASSWORD|0x206;
+    CM_PWMDIV = PWM_CLK_PASSWORD|(PLL_CLOCK_DIVISOR << 12);
+    CM_PWMCTL = CM_PWMCTL|PWM_CLK_PASSWORD|0x10;
+    while (!CM_PWMCTLbits.BUSY);
+    PWM_CTLbits.MSEN1 = 1;
+    PWM_CTLbits.PWEN1 = 1;
 }
 
 /**

@@ -1,7 +1,7 @@
-; password.s
-; Control de acceso por password de 5 dígitos, muestra * y permite 3 intentos
 
-org 100h             ; Programa tipo .COM para DOS
+
+
+org 100h
 
 MAX_INTENTOS  equ 3
 LARGO_PASS    equ 5
@@ -28,18 +28,18 @@ intento:
     mov si, 0
 
 leer_caracter:
-    mov ah, 7           ; Lee caracter sin eco
+    mov ah, 7
     int 21h
     mov [buffer+si], al
 
-    mov dl, '*'         ; Muestra *
+    mov dl, '*'
     mov ah, 2
     int 21h
 
     inc si
     loop leer_caracter
 
-    ; Comparar password ingresado
+
     mov cx, LARGO_PASS
     mov si, 0
     mov di, 0
@@ -52,7 +52,7 @@ comparar:
     inc si
     loop comparar
 
-    ; Si llega aquí, es correcto
+
     mov ah, 9
     mov dx, mensajeOK
     int 21h

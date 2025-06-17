@@ -1,15 +1,15 @@
-// prj.s
-// 23 de Mayo de 2022
-// Arqui I UCC
+
+
+
 
 .text
 
 .global main
 main:
-      LDR R3, =array // load base address of a into R3
+      LDR R3, =array
       ... more code here
-done: NOP            // dummy instruction for breakpoint
-      MOV PC,L       // return from main
+done: NOP
+      MOV PC,L
 
 .data
 array:
